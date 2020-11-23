@@ -20,7 +20,7 @@
         .dplayer-icons {
             display: none;
         }
-        .dplayer-icons.dplayer-comment-box {
+        .dplayer-icons.dplayer-tag-box {
             display: block;
         }
     }
@@ -156,7 +156,7 @@
         height: 38px;
         position: absolute;
         bottom: 0;
-        &.dplayer-comment-box {
+        &.dplayer-tag-box {
             display: none;
             position: absolute;
             transition: all .3s ease-in-out;
@@ -169,7 +169,7 @@
             .dplayer-icon {
                 padding: 7px;
             }
-            .dplayer-comment-setting-icon {
+            .dplayer-tag-setting-icon {
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -179,7 +179,7 @@
                 right: 0;
                 top: 0;
             }
-            .dplayer-comment-setting-box {
+            .dplayer-tag-setting-box {
                 position: absolute;
                 background: rgba(28, 28, 28, 0.9);
                 bottom: 41px;
@@ -191,7 +191,7 @@
                 width: 204px;
                 transition: all .3s ease-in-out;
                 transform: scale(0);
-                &.dplayer-comment-setting-open {
+                &.dplayer-tag-setting-open {
                     transform: scale(1);
                 }
                 input[type=radio] {
@@ -200,14 +200,14 @@
                 label {
                     cursor: pointer;
                 }
-                .dplayer-comment-setting-title {
+                .dplayer-tag-setting-title {
                     font-size: 13px;
                     color: #fff;
                     line-height: 30px;
                 }
-                .dplayer-comment-setting-type {
+                .dplayer-tag-setting-type {
                     font-size: 0;
-                    .dplayer-comment-setting-title {
+                    .dplayer-tag-setting-title {
                         margin-bottom: 6px;
                     }
                     label {
@@ -240,7 +240,7 @@
                         color: #1c1c1c;
                     }
                 }
-                .dplayer-comment-setting-color {
+                .dplayer-tag-setting-color {
                     font-size: 0;
                     label {
                         font-size: 0;
@@ -260,7 +260,7 @@
                     }
                 }
             }
-            .dplayer-comment-input {
+            .dplayer-tag-input {
                 outline: none;
                 border: none;
                 padding: 8px 31px;
@@ -337,7 +337,7 @@
                 line-height: 22px;
                 font-size: 14px;
             }
-            &.dplayer-comment-icon {
+            &.dplayer-tag-icon {
                 padding: 10px 9px 9px;
             }
             &.dplayer-setting-icon {
@@ -577,7 +577,7 @@
                 }
             }
         }
-        .dplayer-comment {
+        .dplayer-tag {
             display: inline-block;
             height: 100%;
         }

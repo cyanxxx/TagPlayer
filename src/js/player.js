@@ -20,6 +20,7 @@ import HotKey from './hotkey';
 // import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
 import tplVideo from '../template/video.art';
+import Tag from './tag';
 
 let index = 0;
 const instances = [];
@@ -77,6 +78,9 @@ class TagPlayer {
 
         this.controller = new Controller(this);
 
+        if (this.options.sendTag) {
+            this.tag = new Tag(this, this.options.sendTag);
+        }
         // if (this.options.danmaku) {
         //     this.danmaku = new Danmaku({
         //         container: this.template.danmaku,

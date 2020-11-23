@@ -11,7 +11,7 @@ module.exports = {
     devtool: 'cheap-module-source-map',
 
     entry: {
-        DPlayer: './src/js/index.js',
+        TagPlayer: './src/js/index.js',
     },
 
     output: {
