@@ -92,10 +92,11 @@ class Tag {
         //     }
         // );
         const sendPromise = this.sendTag({ time: this.player.video.currentTime, value: this.player.template.commentInput.value });
-        sendPromise.then(() => {
+        sendPromise.then((highlights) => {
             console.log('send successfully.');
             this.player.template.commentInput.value = '';
             this.hide();
+            this.player.options.highlights = highlights;
             this.player.controller.setHighlights();
         });
     }
