@@ -11,7 +11,7 @@
 
 ## Introduction
 
-![image](http://i.imgur.com/207ch36.jpg)
+<!-- ![image](http://i.imgur.com/207ch36.jpg) -->
 
 TagPlayer is a tag video player based on [DPlayer](https://github.com/DIYgod/DPlayer).
 
