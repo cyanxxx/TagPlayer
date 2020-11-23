@@ -5,7 +5,7 @@ import handleOption from './options';
 import i18n from './i18n';
 import Template from './template';
 import Icons from './icons';
-import Danmaku from './danmaku';
+// import Danmaku from './danmaku';
 import Events from './events';
 import FullScreen from './fullscreen';
 import User from './user';
@@ -15,18 +15,18 @@ import Timer from './timer';
 import Bezel from './bezel';
 import Controller from './controller';
 import Setting from './setting';
-import Comment from './comment';
+// import Comment from './comment';
 import HotKey from './hotkey';
-import ContextMenu from './contextmenu';
+// import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
 import tplVideo from '../template/video.art';
 
 let index = 0;
 const instances = [];
 
-class DPlayer {
+class TagPlayer {
     /**
-     * DPlayer constructor function
+     * TagPlayer constructor function
      *
      * @param {Object} options - See README
      * @constructor
@@ -44,14 +44,14 @@ class DPlayer {
         this.container = this.options.container;
 
         this.container.classList.add('dplayer');
-        if (!this.options.danmaku) {
-            this.container.classList.add('dplayer-no-danmaku');
-        }
-        if (this.options.live) {
-            this.container.classList.add('dplayer-live');
-        } else {
-            this.container.classList.remove('dplayer-live');
-        }
+        // if (!this.options.danmaku) {
+        //     this.container.classList.add('dplayer-no-danmaku');
+        // }
+        // if (this.options.live) {
+        //     this.container.classList.add('dplayer-live');
+        // } else {
+        //     this.container.classList.remove('dplayer-live');
+        // }
         if (utils.isMobile) {
             this.container.classList.add('dplayer-mobile');
         }
@@ -77,42 +77,42 @@ class DPlayer {
 
         this.controller = new Controller(this);
 
-        if (this.options.danmaku) {
-            this.danmaku = new Danmaku({
-                container: this.template.danmaku,
-                opacity: this.user.get('opacity'),
-                callback: () => {
-                    setTimeout(() => {
-                        this.template.danmakuLoading.style.display = 'none';
+        // if (this.options.danmaku) {
+        //     this.danmaku = new Danmaku({
+        //         container: this.template.danmaku,
+        //         opacity: this.user.get('opacity'),
+        //         callback: () => {
+        //             setTimeout(() => {
+        //                 this.template.danmakuLoading.style.display = 'none';
 
-                        // autoplay
-                        if (this.options.autoplay) {
-                            this.play();
-                        }
-                    }, 0);
-                },
-                error: (msg) => {
-                    this.notice(msg);
-                },
-                apiBackend: this.options.apiBackend,
-                borderColor: this.options.theme,
-                height: this.arrow ? 24 : 30,
-                time: () => this.video.currentTime,
-                unlimited: this.user.get('unlimited'),
-                api: {
-                    id: this.options.danmaku.id,
-                    address: this.options.danmaku.api,
-                    token: this.options.danmaku.token,
-                    maximum: this.options.danmaku.maximum,
-                    addition: this.options.danmaku.addition,
-                    user: this.options.danmaku.user,
-                },
-                events: this.events,
-                tran: (msg) => this.tran(msg),
-            });
+        //                 // autoplay
+        //                 if (this.options.autoplay) {
+        //                     this.play();
+        //                 }
+        //             }, 0);
+        //         },
+        //         error: (msg) => {
+        //             this.notice(msg);
+        //         },
+        //         apiBackend: this.options.apiBackend,
+        //         borderColor: this.options.theme,
+        //         height: this.arrow ? 24 : 30,
+        //         time: () => this.video.currentTime,
+        //         unlimited: this.user.get('unlimited'),
+        //         api: {
+        //             id: this.options.danmaku.id,
+        //             address: this.options.danmaku.api,
+        //             token: this.options.danmaku.token,
+        //             maximum: this.options.danmaku.maximum,
+        //             addition: this.options.danmaku.addition,
+        //             user: this.options.danmaku.user,
+        //         },
+        //         events: this.events,
+        //         tran: (msg) => this.tran(msg),
+        //     });
 
-            this.comment = new Comment(this);
-        }
+        //     this.comment = new Comment(this);
+        // }
 
         this.setting = new Setting(this);
         this.plugins = {};
@@ -138,13 +138,16 @@ class DPlayer {
 
         this.hotkey = new HotKey(this);
 
-        this.contextmenu = new ContextMenu(this);
+        // this.contextmenu = new ContextMenu(this);
 
         this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
 
         this.infoPanel = new InfoPanel(this);
 
-        if (!this.danmaku && this.options.autoplay) {
+        // if (!this.danmaku && this.options.autoplay) {
+        //     this.play();
+        // }
+        if (this.options.autoplay) {
             this.play();
         }
 
@@ -168,9 +171,9 @@ class DPlayer {
 
         this.video.currentTime = time;
 
-        if (this.danmaku) {
-            this.danmaku.seek();
-        }
+        // if (this.danmaku) {
+        //     this.danmaku.seek();
+        // }
 
         this.bar.set('played', time / this.video.duration, 'width');
         this.template.ptime.innerHTML = utils.secondToTime(time);
@@ -199,9 +202,9 @@ class DPlayer {
         this.timer.enable('loading');
         this.container.classList.remove('dplayer-paused');
         this.container.classList.add('dplayer-playing');
-        if (this.danmaku) {
-            this.danmaku.play();
-        }
+        // if (this.danmaku) {
+        //     this.danmaku.play();
+        // }
         if (this.options.mutex) {
             for (let i = 0; i < instances.length; i++) {
                 if (this !== instances[i]) {
@@ -230,9 +233,9 @@ class DPlayer {
         this.timer.disable('loading');
         this.container.classList.remove('dplayer-playing');
         this.container.classList.add('dplayer-paused');
-        if (this.danmaku) {
-            this.danmaku.pause();
-        }
+        // if (this.danmaku) {
+        //     this.danmaku.pause();
+        // }
     }
 
     switchVolumeIcon() {
@@ -297,28 +300,28 @@ class DPlayer {
      * @param {Object} video - new video info
      * @param {Object} danmaku - new danmaku info
      */
-    switchVideo(video, danmakuAPI) {
+    switchVideo(video) {
         this.pause();
         this.video.poster = video.pic ? video.pic : '';
         this.video.src = video.url;
         this.initMSE(this.video, video.type || 'auto');
-        if (danmakuAPI) {
-            this.template.danmakuLoading.style.display = 'block';
-            this.bar.set('played', 0, 'width');
-            this.bar.set('loaded', 0, 'width');
-            this.template.ptime.innerHTML = '00:00';
-            this.template.danmaku.innerHTML = '';
-            if (this.danmaku) {
-                this.danmaku.reload({
-                    id: danmakuAPI.id,
-                    address: danmakuAPI.api,
-                    token: danmakuAPI.token,
-                    maximum: danmakuAPI.maximum,
-                    addition: danmakuAPI.addition,
-                    user: danmakuAPI.user,
-                });
-            }
-        }
+        // if (danmakuAPI) {
+        //     this.template.danmakuLoading.style.display = 'block';
+        //     this.bar.set('played', 0, 'width');
+        //     this.bar.set('loaded', 0, 'width');
+        //     this.template.ptime.innerHTML = '00:00';
+        //     this.template.danmaku.innerHTML = '';
+        //     if (this.danmaku) {
+        //         this.danmaku.reload({
+        //             id: danmakuAPI.id,
+        //             address: danmakuAPI.api,
+        //             token: danmakuAPI.token,
+        //             maximum: danmakuAPI.maximum,
+        //             addition: danmakuAPI.addition,
+        //             user: danmakuAPI.user,
+        //         });
+        //     }
+        // }
     }
 
     initMSE(video, type) {
@@ -485,9 +488,9 @@ class DPlayer {
                 this.seek(0);
                 this.play();
             }
-            if (this.danmaku) {
-                this.danmaku.danIndex = 0;
-            }
+            // if (this.danmaku) {
+            //     this.danmaku.danIndex = 0;
+            // }
         });
 
         this.on('play', () => {
@@ -592,9 +595,9 @@ class DPlayer {
     }
 
     resize() {
-        if (this.danmaku) {
-            this.danmaku.resize();
-        }
+        // if (this.danmaku) {
+        //     this.danmaku.resize();
+        // }
         if (this.controller.thumbnails) {
             this.controller.thumbnails.resize(160, (this.video.videoHeight / this.video.videoWidth) * 160, this.template.barWrap.offsetWidth);
         }
@@ -621,4 +624,4 @@ class DPlayer {
     }
 }
 
-export default DPlayer;
+export default TagPlayer;

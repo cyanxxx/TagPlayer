@@ -31,12 +31,12 @@ class Events {
             'screenshot',
             'thumbnails_show',
             'thumbnails_hide',
-            'danmaku_show',
-            'danmaku_hide',
-            'danmaku_clear',
-            'danmaku_loaded',
-            'danmaku_send',
-            'danmaku_opacity',
+            // 'danmaku_show',
+            // 'danmaku_hide',
+            // 'danmaku_clear',
+            // 'danmaku_loaded',
+            // 'danmaku_send',
+            // 'danmaku_opacity',
             'contextmenu_show',
             'contextmenu_hide',
             'notice_show',
@@ -52,6 +52,7 @@ class Events {
             'subtitle_show',
             'subtitle_hide',
             'subtitle_change',
+            'add_tags',
         ];
     }
 
