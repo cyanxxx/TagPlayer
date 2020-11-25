@@ -622,8 +622,8 @@ class TagPlayer {
         this.events.trigger('destroy');
     }
 
-    setHighlight(highlights) {
-        this.player.options.highlights = highlights;
+    setHighlight(highlight) {
+        this.player.options.highlight = highlight;
         this.player.controller.setHighlights();
     }
 
