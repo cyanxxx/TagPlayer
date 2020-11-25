@@ -91,9 +91,10 @@ class Tag {
         //         this.hide();
         //     }
         // );
-        const sendPromise = this.sendTag({ time: this.player.video.currentTime, value: this.player.template.commentInput.value });
+        const tagInfo = { time: this.player.video.currentTime, value: this.player.template.commentInput.value };
+        const sendPromise = this.sendTag(tagInfo);
         sendPromise.then(() => {
-            console.log('send successfully.');
+            this.player.events.trigger('add_tags', tagInfo);
             this.player.template.commentInput.value = '';
             this.hide();
         });

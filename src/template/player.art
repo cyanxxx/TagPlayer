@@ -73,11 +73,13 @@
             <span class="dplayer-icon-content">{{@ icons.airplay }}</span>
         </div>
         {{ /if }}
+        {{ if options.sendTag}}
         <div class="dplayer-tag">
             <button class="dplayer-icon dplayer-tag-icon" data-balloon="{{ tran('Add tag') }}" data-balloon-pos="up">
                 <span class="dplayer-icon-content">{{@ icons.comment }}</span>
             </button>
         </div>
+        {{ /if }}
         {{ if options.subtitle }}
         <div class="dplayer-subtitle-btn">
             <button class="dplayer-icon dplayer-subtitle-icon" data-balloon="{{ tran('Hide subtitle') }}" data-balloon-pos="up">

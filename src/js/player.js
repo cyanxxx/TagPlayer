@@ -623,8 +623,8 @@ class TagPlayer {
     }
 
     setHighlight(highlight) {
-        this.player.options.highlight = highlight;
-        this.player.controller.setHighlights();
+        this.options.highlight = highlight;
+        this.controller.setHighlights();
     }
 
     static get version() {
