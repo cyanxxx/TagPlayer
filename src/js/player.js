@@ -622,6 +622,11 @@ class TagPlayer {
         this.events.trigger('destroy');
     }
 
+    setHighlight(highlights) {
+        this.player.options.highlights = highlights;
+        this.player.controller.setHighlights();
+    }
+
     static get version() {
         /* global DPLAYER_VERSION */
         return DPLAYER_VERSION;
