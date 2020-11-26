@@ -2,7 +2,7 @@
     "name": "tagplayer",
     "version": "1.0.0",
     "description": "TagPlayer is a tag player based on DPlayer.",
-    "main": "dist/TPlayer.min.js",
+    "main": "dist/TagPlayer.min.js",
     "scripts": {
         "start": "npm run dev",
         "build": "cross-env NODE_ENV=production webpack --config webpack/prod.config.js --progress --display-error-details --colors",
