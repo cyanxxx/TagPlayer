@@ -359,6 +359,7 @@ class TagPlayer {
                     if (window.Hls) {
                         if (window.Hls.isSupported()) {
                             if (this.plugins.hls) {
+                                console.log('switch hls videos.')
                                 this.plugins.hls.loadSource(video.src);
                             } else {
                                 const options = this.options.pluginOptions.hls;
