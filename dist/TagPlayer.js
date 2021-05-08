@@ -4745,7 +4745,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global DPLAYER_VERSION GIT_HASH */
 
-console.log('\n'.concat(" %c DPlayer v", "1.0.6", " ").concat("177e049", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
+console.log('\n'.concat(" %c DPlayer v", "1.0.7", " ").concat("4841251", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 /* harmony default export */ __webpack_exports__["default"] = (_player__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 /***/ }),
@@ -4809,7 +4809,7 @@ var InfoPanel = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update() {
-      this.template.infoVersion.innerHTML = "v".concat("1.0.6", " ").concat("177e049");
+      this.template.infoVersion.innerHTML = "v".concat("1.0.7", " ").concat("4841251");
       this.template.infoType.innerHTML = this.player.type;
       this.template.infoUrl.innerHTML = this.player.options.video.url;
       this.template.infoResolution.innerHTML = "".concat(this.player.video.videoWidth, " x ").concat(this.player.video.videoHeight);
@@ -5343,10 +5343,8 @@ var TagPlayer = /*#__PURE__*/function () {
                   hls.loadSource(video.src);
                   hls.attachMedia(video);
                   this.events.on('destroy', function () {
-                    console.log(hls, _this3, _this3.plugins, _this3.plugins.hls.destroy); // hls.destroy();
-
-                    _this3.plugins.hls.destroy();
-
+                    console.log(hls.destroy);
+                    hls.destroy();
                     delete _this3.plugins.hls;
                   });
                 }
@@ -5652,7 +5650,7 @@ var TagPlayer = /*#__PURE__*/function () {
     key: "version",
     get: function get() {
       /* global DPLAYER_VERSION */
-      return "1.0.6";
+      return "1.0.7";
     }
   }]);
 
@@ -6504,7 +6502,7 @@ var utils = {
 
   /**
   * optimize control play progress
-    * optimize get element's view position,for float dialog video player
+   * optimize get element's view position,for float dialog video player
   * getBoundingClientRect 在 IE8 及以下返回的值缺失 width、height 值
   * getBoundingClientRect 在 Firefox 11 及以下返回的值会把 transform 的值也包含进去
   * getBoundingClientRect 在 Opera 10.5 及以下返回的值缺失 width、height 值

@@ -359,7 +359,7 @@ class TagPlayer {
                     if (window.Hls) {
                         if (window.Hls.isSupported()) {
                             if (this.plugins.hls) {
-                                console.log('switch hls videos.')
+                                console.log('switch hls videos.');
                                 this.plugins.hls.loadSource(video.src);
                             } else {
                                 const options = this.options.pluginOptions.hls;
@@ -368,11 +368,11 @@ class TagPlayer {
                                 hls.loadSource(video.src);
                                 hls.attachMedia(video);
                                 this.events.on('destroy', () => {
+                                    console.log(hls.destroy);
                                     hls.destroy();
                                     delete this.plugins.hls;
                                 });
                             }
-                           
                         } else {
                             this.notice('Error: Hls is not supported.');
                         }
