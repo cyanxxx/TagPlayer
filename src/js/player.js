@@ -367,11 +367,12 @@ class TagPlayer {
                                 this.plugins.hls = hls;
                                 hls.loadSource(video.src);
                                 hls.attachMedia(video);
+                                this.events.on('destroy', () => {
+                                    hls.destroy();
+                                    delete this.plugins.hls;
+                                });
                             }
-                            this.events.on('destroy', () => {
-                                this.plugins.hls.destroy();
-                                delete this.plugins.hls;
-                            });
+                           
                         } else {
                             this.notice('Error: Hls is not supported.');
                         }

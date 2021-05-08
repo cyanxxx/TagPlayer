@@ -19,8 +19,6 @@ module.exports = {
         filename: '[name].js',
         library: '[name]',
         libraryTarget: 'umd',
-        libraryExport: 'default',
-        umdNamedDefine: true,
         publicPath: '/',
     },
 
@@ -81,20 +79,6 @@ module.exports = {
         ],
     },
 
-    devServer: {
-        compress: true,
-        contentBase: path.resolve(__dirname, '..', 'demo'),
-        clientLogLevel: 'none',
-        quiet: false,
-        open: true,
-        historyApiFallback: {
-            disableDotRule: true,
-        },
-        watchOptions: {
-            ignored: /node_modules/,
-        },
-    },
-
     plugins: [
         new webpack.DefinePlugin({
             DPLAYER_VERSION: `"${require('../package.json').version}"`,
@@ -107,9 +91,5 @@ module.exports = {
         fs: 'empty',
         net: 'empty',
         tls: 'empty',
-    },
-
-    performance: {
-        hints: false,
     },
 };
