@@ -1,6 +1,6 @@
 {
     "name": "tagplayer",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "TagPlayer is a tag player based on DPlayer.",
     "main": "dist/TagPlayer.min.js",
     "types": "dist/TagPlayer.d.ts",

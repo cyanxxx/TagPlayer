@@ -294,8 +294,8 @@ class TagPlayer {
     /**
      * attach event
      */
-    on(name, callback) {
-        this.events.on(name, callback);
+    on(name, callback, type) {
+        this.events.on(name, callback, type);
     }
 
     /**
@@ -311,9 +311,13 @@ class TagPlayer {
         this.initMSE(this.video, video.type || 'auto');
         // if (danmakuAPI) {
         //     this.template.danmakuLoading.style.display = 'block';
-        //     this.bar.set('played', 0, 'width');
-        //     this.bar.set('loaded', 0, 'width');
-        //     this.template.ptime.innerHTML = '00:00';
+        this.bar.set('played', 0, 'width');
+        this.bar.set('loaded', 0, 'width');
+        this.template.ptime.innerHTML = '00:00';
+        this.clearNotice()
+        this.on('canplay', () => {
+             this.video.currentTime = 0
+        }, true)
         //     this.template.danmaku.innerHTML = '';
         //     if (this.danmaku) {
         //         this.danmaku.reload({
@@ -602,6 +606,15 @@ class TagPlayer {
                 this.events.trigger('notice_hide');
             }, time);
         }
+    }
+
+    clearNotice(text, time = 2000, opacity = 0.8) {
+        this.template.notice.innerHTML = '';
+        this.template.notice.style.opacity = opacity;
+        if (this.noticeTime) {
+            clearTimeout(this.noticeTime);
+        }
+       this.events.trigger('notice_hide');
     }
 
     resize() {

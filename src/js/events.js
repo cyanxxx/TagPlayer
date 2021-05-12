@@ -56,19 +56,24 @@ class Events {
         ];
     }
 
-    on(name, callback) {
+    on(name, callback, once) {
         if (this.type(name) && typeof callback === 'function') {
             if (!this.events[name]) {
                 this.events[name] = [];
             }
-            this.events[name].push(callback);
+            this.events[name].push({cb: callback, once: !!once});
         }
     }
 
     trigger(name, info) {
         if (this.events[name] && this.events[name].length) {
             for (let i = 0; i < this.events[name].length; i++) {
-                this.events[name][i](info);
+                const event = this.events[name][i]
+                event.cb(info);
+                if(event.once){
+                    this.events[name][i]  = null
+                    this.events[name].splice(i,1)
+                }
             }
         }
     }
