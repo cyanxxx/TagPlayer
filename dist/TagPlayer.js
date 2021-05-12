@@ -4754,7 +4754,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global DPLAYER_VERSION GIT_HASH */
 
-console.log('\n'.concat(" %c DPlayer v", "1.0.9", " ").concat("60cc063", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
+console.log('\n'.concat(" %c DPlayer v", "1.0.10", " ").concat("e7817f0", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 /* harmony default export */ __webpack_exports__["default"] = (_player__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 /***/ }),
@@ -4818,7 +4818,7 @@ var InfoPanel = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update() {
-      this.template.infoVersion.innerHTML = "v".concat("1.0.9", " ").concat("60cc063");
+      this.template.infoVersion.innerHTML = "v".concat("1.0.10", " ").concat("e7817f0");
       this.template.infoType.innerHTML = this.player.type;
       this.template.infoUrl.innerHTML = this.player.options.video.url;
       this.template.infoResolution.innerHTML = "".concat(this.player.video.videoWidth, " x ").concat(this.player.video.videoHeight);
@@ -5610,6 +5610,7 @@ var TagPlayer = /*#__PURE__*/function () {
 
       var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
       var opacity = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.8;
+      this.template.notice.style.transitionDuration = '0.3s';
       this.template.notice.innerHTML = text;
       this.template.notice.style.opacity = opacity;
 
@@ -5629,11 +5630,11 @@ var TagPlayer = /*#__PURE__*/function () {
     }
   }, {
     key: "clearNotice",
-    value: function clearNotice(text) {
-      var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
-      var opacity = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.8;
+    value: function clearNotice() {
+      console.log('clear');
+      this.template.notice.style.transitionDuration = '0s';
+      this.template.notice.style.opacity = 0;
       this.template.notice.innerHTML = '';
-      this.template.notice.style.opacity = opacity;
 
       if (this.noticeTime) {
         clearTimeout(this.noticeTime);
@@ -5679,7 +5680,7 @@ var TagPlayer = /*#__PURE__*/function () {
     key: "version",
     get: function get() {
       /* global DPLAYER_VERSION */
-      return "1.0.9";
+      return "1.0.10";
     }
   }]);
 

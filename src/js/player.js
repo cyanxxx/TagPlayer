@@ -594,6 +594,7 @@ class TagPlayer {
     }
 
     notice(text, time = 2000, opacity = 0.8) {
+        this.template.notice.style.transitionDuration = '0.3s'
         this.template.notice.innerHTML = text;
         this.template.notice.style.opacity = opacity;
         if (this.noticeTime) {
@@ -608,9 +609,10 @@ class TagPlayer {
         }
     }
 
-    clearNotice(text, time = 2000, opacity = 0.8) {
+    clearNotice() {
+        this.template.notice.style.transitionDuration = '0s'
+        this.template.notice.style.opacity = 0;
         this.template.notice.innerHTML = '';
-        this.template.notice.style.opacity = opacity;
         if (this.noticeTime) {
             clearTimeout(this.noticeTime);
         }
