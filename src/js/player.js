@@ -43,7 +43,7 @@ class TagPlayer {
         this.events = new Events();
         this.user = new User(this);
         this.container = this.options.container;
-
+        
         this.container.classList.add('dplayer');
         // if (!this.options.danmaku) {
         //     this.container.classList.add('dplayer-no-danmaku');
@@ -157,6 +157,8 @@ class TagPlayer {
 
         index++;
         instances.push(this);
+
+        this.switchTimer = null;
     }
 
     /**
@@ -306,15 +308,19 @@ class TagPlayer {
      */
     switchVideo(video) {
         this.pause();
-        this.video.poster = video.pic ? video.pic : '';
-        this.video.src = video.url;
-        this.initMSE(this.video, video.type || 'auto');
+        this.openSwitchTimer();
+        this.initMSE(this.video, video.type || 'auto', video.url);
         // if (danmakuAPI) {
         //     this.template.danmakuLoading.style.display = 'block';
         this.bar.set('played', 0, 'width');
         this.bar.set('loaded', 0, 'width');
         this.template.ptime.innerHTML = '00:00';
         this.clearNotice()
+        
+        this.on('durationchange', () => this.checkSwitchTimer(), true);
+        this.on('loadedmetadata', () => {
+           this.video.poster = video.pic ? video.pic : '';
+        }, true)
         this.on('canplay', () => {
              this.video.currentTime = 0
         }, true)
@@ -332,7 +338,30 @@ class TagPlayer {
         // }
     }
 
-    initMSE(video, type) {
+    openSwitchTimer() {
+        this.switchTimer = setTimeout(() => {
+            this.container.classList.add('dplayer-loading');
+            this.switchTimer = null
+        }, 500)
+    }
+
+    checkSwitchTimer() {
+        if(this.switchTimer){
+            clearTimeout(this.switchTimer)
+            this.switchTimer = null
+        }else{
+            this.container.classList.remove('dplayer-loading')
+        }
+    }
+
+    clearSwitchTimer() {
+        if(this.switchTimer){
+            clearTimeout(this.switchTimer)
+            this.switchTimer = null
+        }
+    }
+
+    initMSE(video, type, url) {
         this.type = type;
         if (this.options.video.customType && this.options.video.customType[type]) {
             if (Object.prototype.toString.call(this.options.video.customType[type]) === '[object Function]') {
@@ -352,10 +381,11 @@ class TagPlayer {
                     this.type = 'normal';
                 }
             }
-
-            if (this.type === 'hls' && (video.canPlayType('application/x-mpegURL') || video.canPlayType('application/vnd.apple.mpegURL'))) {
-                this.type = 'normal';
-            }
+            
+            //  就算本地支持也不用本地的hls解析视频，而是通过hls.js，因为需要改变ts获取的路径
+            // if (this.type === 'hls' && (video.canPlayType('application/x-mpegURL') || video.canPlayType('application/vnd.apple.mpegURL'))) {
+            //     this.type = 'normal';
+            // }
 
             switch (this.type) {
                 // https://github.com/video-dev/hls.js
@@ -370,10 +400,9 @@ class TagPlayer {
                             const options = this.options.pluginOptions.hls;
                             const hls = new window.Hls(options);
                             this.plugins.hls = hls;
-                            hls.loadSource(video.src);
+                            hls.loadSource(url || video.src );
                             hls.attachMedia(video);
                             this.events.on('destroy', () => {
-                                console.log(hls.destroy);
                                 hls.destroy();
                                 delete this.plugins.hls;
                             });
@@ -393,7 +422,7 @@ class TagPlayer {
                             const flvPlayer = window.flvjs.createPlayer(
                                 Object.assign(this.options.pluginOptions.flv.mediaDataSource || {}, {
                                     type: 'flv',
-                                    url: video.src,
+                                    url: url || video.src ,
                                 }),
                                 this.options.pluginOptions.flv.config
                             );
@@ -417,7 +446,7 @@ class TagPlayer {
                 // https://github.com/Dash-Industry-Forum/dash.js
                 case 'dash':
                     if (window.dashjs) {
-                        const dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, video.src, false);
+                        const dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, url || video.src , false);
                         const options = this.options.pluginOptions.dash;
                         dashjsPlayer.updateSettings(options);
                         this.plugins.dash = dashjsPlayer;
@@ -438,7 +467,7 @@ class TagPlayer {
                             const options = this.options.pluginOptions.webtorrent;
                             const client = new window.WebTorrent(options);
                             this.plugins.webtorrent = client;
-                            const torrentId = video.src;
+                            const torrentId = url || video.src ;
                             video.src = '';
                             video.preload = 'metadata';
                             video.addEventListener('durationchange', () => this.container.classList.remove('dplayer-loading'), { once: true });
@@ -639,8 +668,9 @@ class TagPlayer {
         this.pause();
         this.controller.destroy();
         this.timer.destroy();
-        this.video.src = '';
+        this.type === 'normal' && (this.video.src = '');
         this.container.innerHTML = '';
+        this.clearSwitchTimer()
         this.events.trigger('destroy');
     }
 

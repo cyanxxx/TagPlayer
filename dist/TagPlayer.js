@@ -4754,7 +4754,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global DPLAYER_VERSION GIT_HASH */
 
-console.log('\n'.concat(" %c DPlayer v", "1.0.10", " ").concat("776855e", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
+console.log('\n'.concat(" %c DPlayer v", "1.0.11", " ").concat("2e92aa6", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 /* harmony default export */ __webpack_exports__["default"] = (_player__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 /***/ }),
@@ -4818,7 +4818,7 @@ var InfoPanel = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update() {
-      this.template.infoVersion.innerHTML = "v".concat("1.0.10", " ").concat("776855e");
+      this.template.infoVersion.innerHTML = "v".concat("1.0.11", " ").concat("2e92aa6");
       this.template.infoType.innerHTML = this.player.type;
       this.template.infoUrl.innerHTML = this.player.options.video.url;
       this.template.infoResolution.innerHTML = "".concat(this.player.video.videoWidth, " x ").concat(this.player.video.videoHeight);
@@ -5114,6 +5114,7 @@ var TagPlayer = /*#__PURE__*/function () {
 
     index++;
     instances.push(this);
+    this.switchTimer = null;
   }
   /**
    * Seek video
@@ -5289,15 +5290,20 @@ var TagPlayer = /*#__PURE__*/function () {
       var _this3 = this;
 
       this.pause();
-      this.video.poster = video.pic ? video.pic : '';
-      this.video.src = video.url;
-      this.initMSE(this.video, video.type || 'auto'); // if (danmakuAPI) {
+      this.openSwitchTimer();
+      this.initMSE(this.video, video.type || 'auto', video.url); // if (danmakuAPI) {
       //     this.template.danmakuLoading.style.display = 'block';
 
       this.bar.set('played', 0, 'width');
       this.bar.set('loaded', 0, 'width');
       this.template.ptime.innerHTML = '00:00';
       this.clearNotice();
+      this.on('durationchange', function () {
+        return _this3.checkSwitchTimer();
+      }, true);
+      this.on('loadedmetadata', function () {
+        _this3.video.poster = video.pic ? video.pic : '';
+      }, true);
       this.on('canplay', function () {
         _this3.video.currentTime = 0;
       }, true); //     this.template.danmaku.innerHTML = '';
@@ -5314,9 +5320,38 @@ var TagPlayer = /*#__PURE__*/function () {
       // }
     }
   }, {
-    key: "initMSE",
-    value: function initMSE(video, type) {
+    key: "openSwitchTimer",
+    value: function openSwitchTimer() {
       var _this4 = this;
+
+      this.switchTimer = setTimeout(function () {
+        _this4.container.classList.add('dplayer-loading');
+
+        _this4.switchTimer = null;
+      }, 500);
+    }
+  }, {
+    key: "checkSwitchTimer",
+    value: function checkSwitchTimer() {
+      if (this.switchTimer) {
+        clearTimeout(this.switchTimer);
+        this.switchTimer = null;
+      } else {
+        this.container.classList.remove('dplayer-loading');
+      }
+    }
+  }, {
+    key: "clearSwitchTimer",
+    value: function clearSwitchTimer() {
+      if (this.switchTimer) {
+        clearTimeout(this.switchTimer);
+        this.switchTimer = null;
+      }
+    }
+  }, {
+    key: "initMSE",
+    value: function initMSE(video, type, url) {
+      var _this5 = this;
 
       this.type = type;
 
@@ -5337,11 +5372,11 @@ var TagPlayer = /*#__PURE__*/function () {
           } else {
             this.type = 'normal';
           }
-        }
+        } //  就算本地支持也不用本地的hls解析视频，而是通过hls.js，因为需要改变ts获取的路径
+        // if (this.type === 'hls' && (video.canPlayType('application/x-mpegURL') || video.canPlayType('application/vnd.apple.mpegURL'))) {
+        //     this.type = 'normal';
+        // }
 
-        if (this.type === 'hls' && (video.canPlayType('application/x-mpegURL') || video.canPlayType('application/vnd.apple.mpegURL'))) {
-          this.type = 'normal';
-        }
 
         switch (this.type) {
           // https://github.com/video-dev/hls.js
@@ -5357,12 +5392,11 @@ var TagPlayer = /*#__PURE__*/function () {
                 var options = this.options.pluginOptions.hls;
                 var hls = new window.Hls(options);
                 this.plugins.hls = hls;
-                hls.loadSource(video.src);
+                hls.loadSource(url || video.src);
                 hls.attachMedia(video);
                 this.events.on('destroy', function () {
-                  console.log(hls.destroy);
                   hls.destroy();
-                  delete _this4.plugins.hls;
+                  delete _this5.plugins.hls;
                 });
               } else {
                 this.notice('Error: Hls is not supported.');
@@ -5379,7 +5413,7 @@ var TagPlayer = /*#__PURE__*/function () {
               if (window.flvjs.isSupported()) {
                 var flvPlayer = window.flvjs.createPlayer(Object.assign(this.options.pluginOptions.flv.mediaDataSource || {}, {
                   type: 'flv',
-                  url: video.src
+                  url: url || video.src
                 }), this.options.pluginOptions.flv.config);
                 this.plugins.flvjs = flvPlayer;
                 flvPlayer.attachMediaElement(video);
@@ -5388,7 +5422,7 @@ var TagPlayer = /*#__PURE__*/function () {
                   flvPlayer.unload();
                   flvPlayer.detachMediaElement();
                   flvPlayer.destroy();
-                  delete _this4.plugins.flvjs;
+                  delete _this5.plugins.flvjs;
                 });
               } else {
                 this.notice('Error: flvjs is not supported.');
@@ -5402,13 +5436,13 @@ var TagPlayer = /*#__PURE__*/function () {
 
           case 'dash':
             if (window.dashjs) {
-              var dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, video.src, false);
+              var dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, url || video.src, false);
               var _options = this.options.pluginOptions.dash;
               dashjsPlayer.updateSettings(_options);
               this.plugins.dash = dashjsPlayer;
               this.events.on('destroy', function () {
                 window.dashjs.MediaPlayer().reset();
-                delete _this4.plugins.dash;
+                delete _this5.plugins.dash;
               });
             } else {
               this.notice("Error: Can't find dashjs.");
@@ -5424,11 +5458,11 @@ var TagPlayer = /*#__PURE__*/function () {
                 var _options2 = this.options.pluginOptions.webtorrent;
                 var client = new window.WebTorrent(_options2);
                 this.plugins.webtorrent = client;
-                var torrentId = video.src;
+                var torrentId = url || video.src;
                 video.src = '';
                 video.preload = 'metadata';
                 video.addEventListener('durationchange', function () {
-                  return _this4.container.classList.remove('dplayer-loading');
+                  return _this5.container.classList.remove('dplayer-loading');
                 }, {
                   once: true
                 });
@@ -5436,15 +5470,15 @@ var TagPlayer = /*#__PURE__*/function () {
                   var file = torrent.files.find(function (file) {
                     return file.name.endsWith('.mp4');
                   });
-                  file.renderTo(_this4.video, {
-                    autoplay: _this4.options.autoplay,
+                  file.renderTo(_this5.video, {
+                    autoplay: _this5.options.autoplay,
                     controls: false
                   });
                 });
                 this.events.on('destroy', function () {
                   client.remove(torrentId);
                   client.destroy();
-                  delete _this4.plugins.webtorrent;
+                  delete _this5.plugins.webtorrent;
                 });
               } else {
                 this.notice('Error: Webtorrent is not supported.');
@@ -5460,7 +5494,7 @@ var TagPlayer = /*#__PURE__*/function () {
   }, {
     key: "initVideo",
     value: function initVideo(video, type) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.initMSE(video, type);
       /**
@@ -5471,62 +5505,62 @@ var TagPlayer = /*#__PURE__*/function () {
       this.on('durationchange', function () {
         // compatibility: Android browsers will output 1 or Infinity at first
         if (video.duration !== 1 && video.duration !== Infinity) {
-          _this5.template.dtime.innerHTML = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].secondToTime(video.duration);
+          _this6.template.dtime.innerHTML = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].secondToTime(video.duration);
         }
       }); // show video loaded bar: to inform interested parties of progress downloading the media
 
       this.on('progress', function () {
         var percentage = video.buffered.length ? video.buffered.end(video.buffered.length - 1) / video.duration : 0;
 
-        _this5.bar.set('loaded', percentage, 'width');
+        _this6.bar.set('loaded', percentage, 'width');
       }); // video download error: an error occurs
 
       this.on('error', function () {
-        if (!_this5.video.error) {
+        if (!_this6.video.error) {
           // Not a video load error, may be poster load failed, see #307
           return;
         }
 
-        _this5.tran && _this5.notice && _this5.type !== 'webtorrent' && _this5.notice(_this5.tran('Video load failed'), -1);
+        _this6.tran && _this6.notice && _this6.type !== 'webtorrent' && _this6.notice(_this6.tran('Video load failed'), -1);
       }); // video end
 
       this.on('ended', function () {
-        _this5.bar.set('played', 1, 'width');
+        _this6.bar.set('played', 1, 'width');
 
-        if (!_this5.setting.loop) {
-          _this5.pause();
+        if (!_this6.setting.loop) {
+          _this6.pause();
         } else {
-          _this5.seek(0);
+          _this6.seek(0);
 
-          _this5.play();
+          _this6.play();
         } // if (this.danmaku) {
         //     this.danmaku.danIndex = 0;
         // }
 
       });
       this.on('play', function () {
-        if (_this5.paused) {
-          _this5.play(true);
+        if (_this6.paused) {
+          _this6.play(true);
         }
       });
       this.on('pause', function () {
-        if (!_this5.paused) {
-          _this5.pause(true);
+        if (!_this6.paused) {
+          _this6.pause(true);
         }
       });
       this.on('timeupdate', function () {
-        _this5.bar.set('played', _this5.video.currentTime / _this5.video.duration, 'width');
+        _this6.bar.set('played', _this6.video.currentTime / _this6.video.duration, 'width');
 
-        var currentTime = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].secondToTime(_this5.video.currentTime);
+        var currentTime = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].secondToTime(_this6.video.currentTime);
 
-        if (_this5.template.ptime.innerHTML !== currentTime) {
-          _this5.template.ptime.innerHTML = currentTime;
+        if (_this6.template.ptime.innerHTML !== currentTime) {
+          _this6.template.ptime.innerHTML = currentTime;
         }
       });
 
       var _loop = function _loop(i) {
-        video.addEventListener(_this5.events.videoEvents[i], function () {
-          _this5.events.trigger(_this5.events.videoEvents[i]);
+        video.addEventListener(_this6.events.videoEvents[i], function () {
+          _this6.events.trigger(_this6.events.videoEvents[i]);
         });
       };
 
@@ -5547,7 +5581,7 @@ var TagPlayer = /*#__PURE__*/function () {
   }, {
     key: "switchQuality",
     value: function switchQuality(index) {
-      var _this6 = this;
+      var _this7 = this;
 
       index = typeof index === 'string' ? parseInt(index) : index;
 
@@ -5579,35 +5613,35 @@ var TagPlayer = /*#__PURE__*/function () {
       this.notice("".concat(this.tran('Switching to'), " ").concat(this.quality.name, " ").concat(this.tran('quality')), -1);
       this.events.trigger('quality_start', this.quality);
       this.on('canplay', function () {
-        if (_this6.prevVideo) {
-          if (_this6.video.currentTime !== _this6.prevVideo.currentTime) {
-            _this6.seek(_this6.prevVideo.currentTime);
+        if (_this7.prevVideo) {
+          if (_this7.video.currentTime !== _this7.prevVideo.currentTime) {
+            _this7.seek(_this7.prevVideo.currentTime);
 
             return;
           }
 
-          _this6.template.videoWrap.removeChild(_this6.prevVideo);
+          _this7.template.videoWrap.removeChild(_this7.prevVideo);
 
-          _this6.video.classList.add('dplayer-video-current');
+          _this7.video.classList.add('dplayer-video-current');
 
           if (!paused) {
-            _this6.video.play();
+            _this7.video.play();
           }
 
-          _this6.prevVideo = null;
+          _this7.prevVideo = null;
 
-          _this6.notice("".concat(_this6.tran('Switched to'), " ").concat(_this6.quality.name, " ").concat(_this6.tran('quality')));
+          _this7.notice("".concat(_this7.tran('Switched to'), " ").concat(_this7.quality.name, " ").concat(_this7.tran('quality')));
 
-          _this6.switchingQuality = false;
+          _this7.switchingQuality = false;
 
-          _this6.events.trigger('quality_end');
+          _this7.events.trigger('quality_end');
         }
       });
     }
   }, {
     key: "notice",
     value: function notice(text) {
-      var _this7 = this;
+      var _this8 = this;
 
       var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
       var opacity = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.8;
@@ -5623,9 +5657,9 @@ var TagPlayer = /*#__PURE__*/function () {
 
       if (time > 0) {
         this.noticeTime = setTimeout(function () {
-          _this7.template.notice.style.opacity = 0;
+          _this8.template.notice.style.opacity = 0;
 
-          _this7.events.trigger('notice_hide');
+          _this8.events.trigger('notice_hide');
         }, time);
       }
     }
@@ -5666,8 +5700,9 @@ var TagPlayer = /*#__PURE__*/function () {
       this.pause();
       this.controller.destroy();
       this.timer.destroy();
-      this.video.src = '';
+      this.type === 'normal' && (this.video.src = '');
       this.container.innerHTML = '';
+      this.clearSwitchTimer();
       this.events.trigger('destroy');
     }
   }, {
@@ -5680,7 +5715,7 @@ var TagPlayer = /*#__PURE__*/function () {
     key: "version",
     get: function get() {
       /* global DPLAYER_VERSION */
-      return "1.0.10";
+      return "1.0.11";
     }
   }]);
 
