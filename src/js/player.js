@@ -364,19 +364,20 @@ class TagPlayer {
                         if (window.Hls.isSupported()) {
                             if (this.plugins.hls) {
                                 console.log('switch hls videos.');
-                                this.plugins.hls.loadSource(video.src);
-                            } else {
-                                const options = this.options.pluginOptions.hls;
-                                const hls = new window.Hls(options);
-                                this.plugins.hls = hls;
-                                hls.loadSource(video.src);
-                                hls.attachMedia(video);
-                                this.events.on('destroy', () => {
-                                    console.log(hls.destroy);
-                                    hls.destroy();
-                                    delete this.plugins.hls;
-                                });
+                                this.plugins.hls.destroy()
+                                this.plugins.hls = null
                             }
+                            const options = this.options.pluginOptions.hls;
+                            const hls = new window.Hls(options);
+                            this.plugins.hls = hls;
+                            hls.loadSource(video.src);
+                            hls.attachMedia(video);
+                            this.events.on('destroy', () => {
+                                console.log(hls.destroy);
+                                hls.destroy();
+                                delete this.plugins.hls;
+                            });
+                            
                         } else {
                             this.notice('Error: Hls is not supported.');
                         }

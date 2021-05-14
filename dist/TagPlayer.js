@@ -4754,7 +4754,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global DPLAYER_VERSION GIT_HASH */
 
-console.log('\n'.concat(" %c DPlayer v", "1.0.10", " ").concat("e7817f0", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
+console.log('\n'.concat(" %c DPlayer v", "1.0.10", " ").concat("776855e", " %c http://dplayer.js.org ", '\n', '\n'), 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 /* harmony default export */ __webpack_exports__["default"] = (_player__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 /***/ }),
@@ -4818,7 +4818,7 @@ var InfoPanel = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update() {
-      this.template.infoVersion.innerHTML = "v".concat("1.0.10", " ").concat("e7817f0");
+      this.template.infoVersion.innerHTML = "v".concat("1.0.10", " ").concat("776855e");
       this.template.infoType.innerHTML = this.player.type;
       this.template.infoUrl.innerHTML = this.player.options.video.url;
       this.template.infoResolution.innerHTML = "".concat(this.player.video.videoWidth, " x ").concat(this.player.video.videoHeight);
@@ -5350,19 +5350,20 @@ var TagPlayer = /*#__PURE__*/function () {
               if (window.Hls.isSupported()) {
                 if (this.plugins.hls) {
                   console.log('switch hls videos.');
-                  this.plugins.hls.loadSource(video.src);
-                } else {
-                  var options = this.options.pluginOptions.hls;
-                  var hls = new window.Hls(options);
-                  this.plugins.hls = hls;
-                  hls.loadSource(video.src);
-                  hls.attachMedia(video);
-                  this.events.on('destroy', function () {
-                    console.log(hls.destroy);
-                    hls.destroy();
-                    delete _this4.plugins.hls;
-                  });
+                  this.plugins.hls.destroy();
+                  this.plugins.hls = null;
                 }
+
+                var options = this.options.pluginOptions.hls;
+                var hls = new window.Hls(options);
+                this.plugins.hls = hls;
+                hls.loadSource(video.src);
+                hls.attachMedia(video);
+                this.events.on('destroy', function () {
+                  console.log(hls.destroy);
+                  hls.destroy();
+                  delete _this4.plugins.hls;
+                });
               } else {
                 this.notice('Error: Hls is not supported.');
               }
@@ -5631,7 +5632,6 @@ var TagPlayer = /*#__PURE__*/function () {
   }, {
     key: "clearNotice",
     value: function clearNotice() {
-      console.log('clear');
       this.template.notice.style.transitionDuration = '0s';
       this.template.notice.style.opacity = 0;
       this.template.notice.innerHTML = '';
